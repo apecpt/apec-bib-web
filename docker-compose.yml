@@ -1,0 +1,21 @@
+db:
+  image:  postgres:9.4.4
+  ports:
+    - "5432:5432"
+  environment:
+    POSTGRES_PASSWORD: test
+booksService:
+  image: "apec-books-service:0.1"
+  ports:
+    - "8081:8081"
+  command: "-Ddb.default.url=jdbc:postgresql://db/postgres?user=postgres"
+  links:
+    - "db:db"
+apecWeb:
+  image: "apec-bib-web:0.1"
+  ports:
+    - "9000:9000"
+  links:
+    - "booksService:booksService"
+  command: "-DbooksService.client.url=http://booksService:8081"
+
